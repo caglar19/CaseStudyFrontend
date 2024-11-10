@@ -1,27 +1,69 @@
 .App {
   text-align: center;
+  font-family: Arial, sans-serif; /* Daha modern bir font */
+  background-color: #f4f4f9; /* Arka plana yumuşak bir renk */
+  padding: 20px;
 }
 
 .App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+  animation: App-logo-spin infinite 10s linear; /* Animasyonu biraz hızlandır */
+  height: 100px; /* Logo boyutunu biraz büyüt */
+  margin-bottom: 20px; /* Logo ve başlık arasında boşluk */
 }
 
 .App-header {
-  background-color: #222;
-  height: 150px;
+  background-color: #333; /* Daha koyu bir arka plan rengi */
+  height: 180px; /* Yüksekliği biraz artır */
   padding: 20px;
-  color: white;
+  color: #ffdd57; /* Daha çarpıcı bir renk tonu */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .App-title {
-  font-size: 1.5em;
+  font-size: 2em; /* Başlık boyutunu artır */
+  font-weight: bold;
+  margin: 10px 0;
 }
 
 .App-intro {
-  font-size: large;
+  font-size: 1.2em; /* Font boyutunu büyük ayarla */
+  color: #444; /* Gri tonlarda bir renk */
+  max-width: 600px; /* İçeriği daralt ve ortala */
+  margin: auto;
+  line-height: 1.6;
+}
+.button-group {
+  display: flex;
+  gap: 15px; /* Butonlar arasındaki boşluk */
+  justify-content: center;
+  margin-top: 20px;
 }
 
+.download-button {
+  display: flex;
+  align-items: center;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1em;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.download-button:hover {
+  background-color: #45a049;
+}
+
+.download-button svg {
+  margin-right: 8px; /* İkon ve metin arasındaki boşluk */
+}
+
+/* Logo döndürme animasyonu */
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

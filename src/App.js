@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
+import jsPDF from "jspdf";
+import * as XLSX from "xlsx";
+import { FaFilePdf, FaFileExcel } from "react-icons/fa"; // PDF ve Excel ikonları
 import "./App.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 const localizer = momentLocalizer(moment);
-
 
 class App extends Component {
     state = {
@@ -26,13 +28,42 @@ class App extends Component {
         this.updateEvents(this.state.selectedCountry, this.state.selectedSubdivision, this.state.includePublicHolidays, this.state.includeSchoolHolidays);
     }
 
+    downloadPDF = () => {
+        const doc = new jsPDF();
+        doc.text("Holiday List for 2024", 10, 10);
+    
+        const events2024 = this.state.events.filter(event => 
+            event.start >= new Date("2024-01-01") && event.end <= new Date("2024-12-31")
+        );
+    
+        events2024.forEach((event, index) => {
+            doc.text(`${index + 1}. ${event.title} - ${event.start.toDateString()} to ${event.end.toDateString()}`, 10, 20 + index * 10);
+        });
+        doc.save("holidays_2024.pdf");
+    };
+    
+    downloadExcel = () => {
+        const events2024 = this.state.events.filter(event => 
+            event.start >= new Date("2024-01-01") && event.end <= new Date("2024-12-31")
+        );
+    
+        const worksheet = XLSX.utils.json_to_sheet(events2024.map(event => ({
+            Title: event.title,
+            Start: event.start.toDateString(),
+            End: event.end.toDateString(),
+        })));
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Holidays_2024");
+        XLSX.writeFile(workbook, "holidays_2024.xlsx");
+    };
+    
+
     handleCountryChange = async (event) => {
-        this.setState({ selectedSubdivision :''})
+        this.setState({ selectedSubdivision: '' });
         const selectedCountry = event.target.value;
         this.setState({ selectedCountry });
         const subdivisions = await fetchSubdivisions(selectedCountry);
         this.setState({ subdivisions });
-
         this.updateEvents(selectedCountry, this.state.selectedSubdivision, this.state.includePublicHolidays, this.state.includeSchoolHolidays);
     }
 
@@ -98,6 +129,17 @@ class App extends Component {
                     />
                     School Holidays
                 </label>
+
+                {/* PDF ve Excel butonları */}
+                <div className="button-group">
+                    <button onClick={this.downloadPDF} className="download-button">
+                        <FaFilePdf /> Download PDF
+                    </button>
+                    <button onClick={this.downloadExcel} className="download-button">
+                        <FaFileExcel /> Download Excel
+                    </button>
+                </div>
+
                 <Calendar
                     localizer={localizer}
                     defaultDate={new Date()}
