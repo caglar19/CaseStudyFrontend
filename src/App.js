@@ -36,13 +36,31 @@ class App extends Component {
             event.start >= new Date("2024-01-01") && event.end <= new Date("2024-12-31")
         );
     
+        let y = 20; // Başlangıç yüksekliği
+        const lineHeight = 10; // Her satırın yüksekliği
+        const pageHeight = doc.internal.pageSize.height; // Sayfa yüksekliği
+        const margin = 10; // Sayfa kenar boşluğu
+    
         events2024.forEach((event, index) => {
-            doc.text(`${index + 1}. ${event.title} - ${event.start.toDateString()} to ${event.end.toDateString()}`, 10, 20 + index * 10);
+            // Yüksekliği kontrol et, sayfa sınırına ulaşıldığında yeni sayfa ekle
+            if (y + lineHeight > pageHeight - margin) {
+                doc.addPage();
+                y = margin; // Yeni sayfada üstten boşluk bırak
+            }
+            doc.text(
+                `${index + 1}. ${event.title} - ${event.start.toDateString()} to ${event.end.toDateString()}`,
+                margin,
+                y
+            );
+            y += lineHeight;
         });
+    
         doc.save("holidays_2024.pdf");
     };
     
+    
     downloadExcel = () => {
+        // 2024 yılındaki tüm tatil etkinliklerini filtrele
         const events2024 = this.state.events.filter(event => 
             event.start >= new Date("2024-01-01") && event.end <= new Date("2024-12-31")
         );
@@ -56,6 +74,7 @@ class App extends Component {
         XLSX.utils.book_append_sheet(workbook, worksheet, "Holidays_2024");
         XLSX.writeFile(workbook, "holidays_2024.xlsx");
     };
+    
     
 
     handleCountryChange = async (event) => {
